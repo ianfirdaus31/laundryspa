@@ -7,10 +7,16 @@ import store from './store.js'
 
 import Home from './pages/Home.vue'
 import Login from './pages/Login.vue'
+
 import IndexOutlet from './pages/outlets/Index.vue'
 import DataOutlet from './pages/outlets/Outlet.vue'
 import AddOutlet from './pages/outlets/Add.vue'
 import EditOutlet from './pages/outlets/Edit.vue'
+
+import IndexCourier from './pages/couriers/Index.vue'
+import DataCouriers from './pages/couriers/Courier.vue'
+import AddCourier from './pages/couriers/Add.vue'
+import EditCourier from './pages/couriers/Edit.vue'
 
 Vue.use(Router)
 
@@ -22,7 +28,9 @@ const router = new Router({
             path: '/',
             name: 'home',
             component: Home,
-            meta: { requiresAuth: true }
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/login',
@@ -32,6 +40,9 @@ const router = new Router({
         {
             path: '/outlets',
             component: IndexOutlet,
+            meta: {
+                requiresAuth: true
+            },
             children: [
                 {
                     path: '',
@@ -55,6 +66,39 @@ const router = new Router({
                     component: EditOutlet,
                     meta: {
                         title: 'Edit Outlet'
+                    }
+                }
+            ]
+        },
+        {
+            path: '/couriers',
+            component: IndexCourier,
+            meta: {
+                requiresAuth: true
+            },
+            children: [
+                {
+                    path: '',
+                    name: 'couriers.data',
+                    component: DataCouriers,
+                    meta: {
+                        title: 'Manage Couriers'
+                    }
+                },
+                {
+                    path: 'add',
+                    name: 'couriers.add',
+                    component: AddCourier,
+                    meta: {
+                        title: 'Add New Courier'
+                    }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'couriers.edit',
+                    component: EditCourier,
+                    meta: {
+                        title: 'Edit Courier'
                     }
                 }
             ]
