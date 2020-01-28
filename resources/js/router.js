@@ -18,6 +18,11 @@ import DataCouriers from './pages/couriers/Courier.vue'
 import AddCourier from './pages/couriers/Add.vue'
 import EditCourier from './pages/couriers/Edit.vue'
 
+import IndexProduct from './pages/products/Index.vue'
+import DataProduct from './pages/products/Product.vue'
+import AddProduct from './pages/products/Add.vue'
+import EditProduct from './pages/products/Edit.vue'
+
 Vue.use(Router)
 
 //DEFINE ROUTE
@@ -99,6 +104,39 @@ const router = new Router({
                     component: EditCourier,
                     meta: {
                         title: 'Edit Courier'
+                    }
+                }
+            ]
+        },
+        {
+            path: '/product',
+            component: IndexProduct,
+            meta: {
+                requiresAuth: true
+            },
+            children: [
+                {
+                    path: '',
+                    name: 'products.data',
+                    component: DataProduct,
+                    meta: {
+                        title: 'Manage Products'
+                    }
+                },
+                {
+                    path: 'add',
+                    name: 'products.add',
+                    component: AddProduct,
+                    meta: {
+                        title: 'Add New Product'
+                    }
+                },
+                {
+                    path: 'edit',
+                    name: 'products.edit',
+                    component: EditProduct,
+                    meta: {
+                        title: 'Edit Product'
                     }
                 }
             ]
