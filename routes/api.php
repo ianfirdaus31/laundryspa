@@ -29,4 +29,14 @@ Route::group(['namespace' => 'API', 'middleware' => 'auth:api'], function () {
     Route::resource('product', 'ProductController')->except(['create', 'show']);
     Route::get('product/laundry-type', 'ProductController@getLaundryType');
     Route::post('product/laundry-type', 'ProductController@storeLaundryType');
+
+    Route::get('roles', 'RolePermissionController@getAllRole')->name('roles');
+    Route::get('permissions', 'RolePermissionController@getAllPermission')->name('permission');
+    Route::post('role-permission', 'RolePermissionController@getRolePermission')->name('role_permission');
+    Route::post('set-role-permission', 'RolePermissionController@setRolePermission')->name('set_role_permission');
+    Route::post('set-role-user', 'RolePermissionController@setRoleUser')->name('user.set_role');
+
+    Route::get('user-authenticated', 'UserController@getUserLogin')->name('user.authenticated');
+    Route::get('user-lists', 'UserController@userLists')->name('user.index');
+
 });

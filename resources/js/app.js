@@ -34,11 +34,16 @@ import App from './App.vue'
 
 import BootstrapVue from 'bootstrap-vue'
 import VueSweetalert2 from 'vue-sweetalert2'
-
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import Permission from './mixins/permission.js'
 
 Vue.use(VueSweetalert2)
 Vue.use(BootstrapVue)
+
+Vue.mixin(Permission)
+
+import { mapActions, mapGetters } from 'vuex'
 
 new Vue({
     el: '#dw',
@@ -46,5 +51,16 @@ new Vue({
     store,
     components: {
         App
+    },
+    computed: {
+        ...mapGetters(['isAuth'])
+    },
+    methods: {
+        ...mapActions('user', ['getUserLogin'])
+    },
+    created() {
+        if (this.isAuth) {
+            this.getUserLogin() //REQUEST DATA YANG SEDANG LOGIN
+        }
     }
 })
