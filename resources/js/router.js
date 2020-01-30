@@ -26,6 +26,12 @@ import EditProduct from './pages/products/Edit.vue'
 import Setting from './pages/setting/Index.vue'
 import SetPermission from './pages/setting/roles/SetPermission.vue'
 
+import IndexExpenses from './pages/expenses/Index.vue'
+import DataExpenses from './pages/expenses/Expense.vue'
+import AddExpenses from './pages/expenses/Add.vue'
+import EditExpenses from './pages/expenses/Edit.vue'
+import ViewExpenses from './pages/expenses/View.vue'
+
 Vue.use(Router)
 
 //DEFINE ROUTE
@@ -147,7 +153,9 @@ const router = new Router({
         {
             path: '/setting',
             component: Setting,
-            meta: { requiresAuth: true },
+            meta: {
+                requiresAuth: true
+            },
             children: [
                 {
                     path: 'role-permission',
@@ -159,6 +167,47 @@ const router = new Router({
                 },
             ]
         },
+        {
+            path: '/expenses',
+            component: IndexExpenses,
+            meta: {
+                requiresAuth: true
+            },
+            children: [
+                {
+                    path: '',
+                    name: 'expenses.data',
+                    component: DataExpenses,
+                    meta: {
+                        title: 'Manage Expenses'
+                    }
+                },
+                {
+                    path: 'add',
+                    name: 'expenses.create',
+                    component: AddExpenses,
+                    meta: {
+                        title: 'Add New Expenses'
+                    }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'expenses.edit',
+                    component: EditExpenses,
+                    meta: {
+                        title: 'Edit Expenses'
+                    }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'expenses.view',
+                    component: ViewExpenses,
+                    meta: {
+                        title: 'View Expenses'
+                    }
+                },
+            ]
+        }
     ]
 });
 

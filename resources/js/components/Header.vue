@@ -12,10 +12,20 @@
                 <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><router-link to="/">Home <span class="sr-only">(current)</span></router-link></li>
-                        <li v-if="$can('read outlets')"><router-link :to="{ name: 'outlets.data' }">Outlet</router-link></li>
+                        <!--<li v-if="$can('read outlets')"><router-link :to="{ name: 'outlets.data' }">Outlet</router-link></li>
                         <li v-if="$can('read couriers')"><router-link :to="{ name: 'couriers.data' }">Courier</router-link></li>
                         <li v-if="$can('read products')"><router-link :to="{ name: 'products.data' }">Products</router-link></li>
                         <li class="dropdown" v-if="authenticated.role === '0'">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Settings <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><router-link :to="{name: 'role.permissions'}">Role Permission</router-link></li>
+                            </ul>
+                        </li>-->
+                        <li><router-link :to="{ name: 'outlets.data' }">Outlet</router-link></li>
+                        <li><router-link :to="{ name: 'couriers.data' }">Courier</router-link></li>
+                        <li><router-link :to="{ name: 'products.data' }">Products</router-link></li>
+                        <li><router-link :to="{ name: 'expenses.data' }">Expenses</router-link></li>
+                        <li class="dropdown">
                             <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Settings <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><router-link :to="{name: 'role.permissions'}">Role Permission</router-link></li>
@@ -33,27 +43,27 @@
                         <li class="dropdown messages-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-envelope-o"></i>
-                                <span class="label label-success">4</span>
+                                <span class="label label-success">{{ notifications.length }}</span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li class="header">You have 4 messages</li>
+                                <li class="header">You have {{ notifications.length }} messages</li>
                                 <li>
-                                    <ul class="menu">
-                                        <li>
-                                            <a href="#">
+                                    <ul class="menu" v-if="notifications.length > 0">
+                                        <li v-for="(row, index) in notifications" :key="index">
+                                            <a href="javascript:void(0)" @click="readNotif(row)">
                                                 <div class="pull-left">
                                                     <img src="https://via.placeholder.com/160" class="img-circle" alt="User Image">
                                                 </div>
                                                 <h4>
-                                                    Support Team
-                                                    <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                                    {{ row.data.sender_name }}
+                                                    <small><i class="fa fa-clock-o"></i> {{ row.created_at | formatDate }}</small>
                                                 </h4>
-                                                <p>Why not buy a new awesome theme?</p>
+                                                <p>{{ row.data.expenses.description.substr(0,30) }}</p>
                                             </a>
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="footer"><a href="#">See All Messages</a></li>
+                                <!--<li class="footer"><a href="#">See All Messages</a></li>-->
                             </ul>
                         </li>
                         <li class="dropdown notifications-menu">
@@ -106,15 +116,42 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
+    import moment from 'moment'
+
 	export default {
 		name: "Header",
+
         computed: {
 		    ...mapState('user', {
 		        authenticated: state => state.authenticated // LOAD STATE AUTHENTICATED
+            }),
+
+            //CUKUP TAMBAHKAN BAGIAN INI
+            ...mapState('notification', {
+                notifications: state => state.notifications //MENGAMBIL STATE NOTIFICATIONS
             })
         },
+
+        filters: {
+		    formatDate(val) {
+		        return moment(new Date(val)).fromNow()
+            }
+        },
+
         methods: {
+            ...mapActions('notification', ['readNotification']), //DEFINISIKAN FUNGSI UNTUK READ NOTIF
+
+            //KETIKA NOTIFIKASI DI KLIK MAKA AKAN MENJALANKAN FUNGSI INI
+            readNotif(row) {
+                //MENGIRIMKAN REQUEST KE SERVER UNTUK MENANDAI BAHWA NOTIFIKASI TELAH DI BACA
+                //KEMUDIAN SELANJUTNYA KITA REDIRECT KE HALAMAN VIEW EXPENSES
+                this.readNotification({ id: row.id}).then(() => this.$router.push({
+                    name: 'expenses.view',
+                    params: {id: row.data.expenses.id}
+                }))
+            },
+
 		    logout() {
 		        return new Promise((resolve, reject) => {
 		            localStorage.removeItem('token') //MENGHAPUS TOKEN DARI LOCALSTORAGE
